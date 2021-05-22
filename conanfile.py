@@ -1,5 +1,5 @@
-from conans import ConanFile, CMake, tools
-from conans.util import files
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain
+from conans import ConanFile, tools
 import os
 
 class Conan(ConanFile):
@@ -10,19 +10,16 @@ class Conan(ConanFile):
     homepage = "https://zlib.net/"
     license = "Zlib"
     url = f"https://github.com/ssrobins/conan-{name}"
-    settings = "os", "compiler", "arch"
+    settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
-    default_options = "shared=False"
-    generators = "cmake"
+    default_options = {"shared": False}
+    generators = "CMakeDeps"
     revision_mode = "scm"
     exports_sources = ["CMakeLists.diff", "CMakeLists.txt"]
     zip_folder_name = f"{name}-{version}"
     zip_name = f"{zip_folder_name}.tar.gz"
     build_subfolder = "build"
     source_subfolder = "source"
-
-    def build_requirements(self):
-        self.build_requires("cmake_utils/0.3.1#e474aafdec36cf92d97e781b844f390f3170f29f")
 
     def source(self):
         tools.get(f"https://zlib.net/{self.zip_name}",
@@ -39,10 +36,26 @@ class Conan(ConanFile):
         # https://github.com/madler/zlib/pull/441
         tools.patch(base_path=self.source_subfolder, patch_file="CMakeLists.diff")
 
+    def generate(self):
+        tc = CMakeToolchain(self)
+        if self.settings.os == "Android":
+            tc.generator = "Ninja Multi-Config"
+        elif self.settings.os == "iOS":
+            tc.generator = "Xcode"
+            tc.variables["CMAKE_OSX_DEPLOYMENT_TARGET"] = self.settings.os.version
+        elif self.settings.os == "Linux":
+            tc.generator = "Ninja Multi-Config"
+        elif self.settings.os == "Macos":
+            tc.generator = "Xcode"
+            tc.variables["CMAKE_OSX_DEPLOYMENT_TARGET"] = self.settings.os.version
+        tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
+
     def build(self):
-        from cmake_utils import cmake_init, cmake_build_debug_release
-        cmake = cmake_init(self.settings, CMake(self), self.build_folder)
-        cmake_build_debug_release(cmake, self.build_subfolder, self.run)
+        cmake = CMake(self)
+        cmake.configure()
+        cmake.build()
 
     def package(self):
         self.copy("*.h", dst="include", src=self.source_subfolder)
