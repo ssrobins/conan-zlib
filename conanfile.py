@@ -12,7 +12,7 @@ class Conan(ConanFile):
     url = f"https://github.com/ssrobins/conan-{name}"
     settings = "os", "compiler", "arch"
     options = {"shared": [True, False]}
-    default_options = "shared=False"
+    default_options = {"shared": False}
     generators = "cmake"
     revision_mode = "scm"
     exports_sources = ["CMakeLists.diff", "CMakeLists.txt"]
