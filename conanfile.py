@@ -10,7 +10,7 @@ class Conan(ConanFile):
     homepage = "https://zlib.net/"
     license = "Zlib"
     url = f"https://github.com/ssrobins/conan-{name}"
-    settings = "os", "compiler", "arch"
+    settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = {"shared": False}
     generators = "cmake"
