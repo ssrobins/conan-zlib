@@ -44,7 +44,6 @@ class Conan(ConanFile):
         cmake = cmake_init(self.settings, CMake(self), self.build_folder)
         cmake.configure(build_dir=self.build_subfolder)
         cmake.build(args=["--verbose"])
-        cmake.test(build_dir=self.build_subfolder)
 
     def package(self):
         self.copy("*.h", dst="include", src=self.source_subfolder)
