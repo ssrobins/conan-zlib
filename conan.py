@@ -22,7 +22,7 @@ def main():
     script_path = os.path.dirname(os.path.realpath(__file__))
 
     if command_args.config:
-        config = "-s build_type=Release"
+        config = f"-s build_type={command_args.config}"
     else:
         config = "-s build_type=Debug"
 
