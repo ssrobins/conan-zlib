@@ -27,11 +27,13 @@ def main():
         config = "-s build_type=Debug"
 
     remote_url = "https://ssrobins.jfrog.io/artifactory/api/conan/conan"
-    subprocess.run(f"conan remote add artifactory-ssrobins {remote_url} --insert --force",
-        cwd=script_path, shell=True, check=True)
+    conan_remote = f"conan remote add artifactory-ssrobins {remote_url} --insert --force"
+    print(conan_remote, flush=True)
+    subprocess.run(conan_remote, cwd=script_path, shell=True, check=True)
 
-    subprocess.run(f"conan create --update . {platform[command_args.platform]} {config}",
-        cwd=script_path, shell=True, check=True)
+    conan_create = f"conan create --update . {platform[command_args.platform]} {config}"
+    print(conan_create, flush=True)
+    subprocess.run(conan_create, cwd=script_path, shell=True, check=True)
 
 
 if __name__ == "__main__":
