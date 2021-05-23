@@ -16,15 +16,21 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("platform", choices=list(platform.keys()), help="Build platform")
+    parser.add_argument("--config", help="Build config")
     command_args = parser.parse_args()
 
     script_path = os.path.dirname(os.path.realpath(__file__))
+
+    if command_args.config:
+        config = "-s build_type=Release"
+    else:
+        config = "-s build_type=Debug"
 
     remote_url = "https://ssrobins.jfrog.io/artifactory/api/conan/conan"
     subprocess.run(f"conan remote add artifactory-ssrobins {remote_url} --insert --force",
         cwd=script_path, shell=True, check=True)
 
-    subprocess.run(f"conan create --update . {platform[command_args.platform]}",
+    subprocess.run(f"conan create --update . {platform[command_args.platform]} {config}",
         cwd=script_path, shell=True, check=True)
 
 

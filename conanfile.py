@@ -40,9 +40,11 @@ class Conan(ConanFile):
         tools.patch(base_path=self.source_subfolder, patch_file="CMakeLists.diff")
 
     def build(self):
-        from cmake_utils import cmake_init, cmake_build_debug_release
+        from cmake_utils import cmake_init
         cmake = cmake_init(self.settings, CMake(self), self.build_folder)
-        cmake_build_debug_release(cmake, self.build_subfolder, self.run)
+        cmake.configure(build_dir=self.build_subfolder)
+        cmake.build(args=["--verbose"])
+        cmake.test(build_dir=self.build_subfolder)
 
     def package(self):
         self.copy("*.h", dst="include", src=self.source_subfolder)
