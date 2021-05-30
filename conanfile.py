@@ -1,5 +1,5 @@
-from conans import ConanFile, CMake, tools
-from conans.util import files
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain
+from conans import ConanFile, tools
 import os
 
 class Conan(ConanFile):
@@ -13,7 +13,7 @@ class Conan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = {"shared": False}
-    generators = "cmake"
+    generators = "CMakeDeps"
     revision_mode = "scm"
     exports_sources = ["CMakeLists.diff", "CMakeLists.txt"]
     zip_folder_name = f"{name}-{version}"
@@ -39,11 +39,16 @@ class Conan(ConanFile):
         # https://github.com/madler/zlib/pull/441
         tools.patch(base_path=self.source_subfolder, patch_file="CMakeLists.diff")
 
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
+
     def build(self):
-        from cmake_utils import cmake_init
-        cmake = cmake_init(self.settings, CMake(self), self.build_folder)
-        cmake.configure(build_dir=self.build_subfolder)
-        cmake.build(args=["--verbose"])
+        cmake = CMake(self)
+        cmake.configure()
+        cmake.build()
 
     def package(self):
         self.copy("*.h", dst="include", src=self.source_subfolder)
