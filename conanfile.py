@@ -38,14 +38,8 @@ class Conan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        if self.settings.os == "Android":
-            tc.generator = "Ninja Multi-Config"
-        elif self.settings.os == "iOS":
-            tc.generator = "Xcode"
-        elif self.settings.os == "Linux":
-            tc.generator = "Ninja Multi-Config"
-        elif self.settings.os == "Macos":
-            tc.generator = "Xcode"
+        tc.generator = "Ninja Multi-Config"
+        tc.variables["CMAKE_VERBOSE_MAKEFILE"] = "TRUE"
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
