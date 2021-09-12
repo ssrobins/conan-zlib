@@ -42,12 +42,10 @@ class Conan(ConanFile):
             tc.generator = "Ninja Multi-Config"
         elif self.settings.os == "iOS":
             tc.generator = "Xcode"
-            tc.variables["CMAKE_OSX_DEPLOYMENT_TARGET"] = self.settings.os.version
         elif self.settings.os == "Linux":
             tc.generator = "Ninja Multi-Config"
         elif self.settings.os == "Macos":
             tc.generator = "Xcode"
-            tc.variables["CMAKE_OSX_DEPLOYMENT_TARGET"] = self.settings.os.version
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
