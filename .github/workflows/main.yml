@@ -33,7 +33,6 @@ jobs:
             script: ./conan.py ios
           - name: linux
             os: ubuntu-20.04
-            container: ghcr.io/ssrobins/docker-linux-build:gcc11.1.0
             script: ./conan.py linux
           - name: macos
             os: macos-10.15
