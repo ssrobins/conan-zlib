@@ -60,7 +60,7 @@ jobs:
         if: contains(matrix.name, 'android')
         run: |
           conan profile new ~/.conan/profiles/default --detect
-          echo [conf]\\ntools.android:ndk_path=$ANDROID_NDK_ROOT >> ~/.conan/profiles/default
+          echo [conf]\ntools.android:ndk_path=$ANDROID_NDK_ROOT >> ~/.conan/profiles/default
           cat ~/.conan/profiles/default
 
       - name: Print versions
