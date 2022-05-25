@@ -17,16 +17,22 @@ class Conan(ConanFile):
     exports_sources = ["CMakeLists.diff", "CMakeLists.txt"]
     zip_folder_name = f"{name}-{version}"
     zip_name = f"{zip_folder_name}.tar.gz"
-    build_subfolder = "build"
-    source_subfolder = "source"
 
     def build_requirements(self):
         self.build_requires("cmake_utils/7.0.0#9bf47716aeee70a8dcfc8592831a0318eb327a09")
 
+    @property
+    def _source_subfolder(self):
+        return "source"
+
+    def layout(self):
+        self.folders.build = "build"
+        self.folders.generators = self.folders.build
+
     def source(self):
         tools.get(f"https://zlib.net/{self.zip_name}",
             sha256="91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9",
-            destination=self.source_subfolder,
+            destination=self._source_subfolder,
             strip_root=True)
 
     def generate(self):
@@ -43,14 +49,13 @@ class Conan(ConanFile):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
-        #with tools.chdir(self.build_subfolder):
-        #     self.run(f"ctest -C {self.settings.build_type} --output-on-failure")
+        self.run(f"ctest -C {self.settings.build_type} --output-on-failure")
 
     def package(self):
-        self.copy("*.h", dst="include", src=self.source_subfolder)
-        self.copy("*.h", dst="include", src=self.build_folder, keep_path=False)
-        self.copy("build/lib/zlibstatic*.lib", dst="lib", keep_path=False)
-        self.copy("build/lib/*.a", dst="lib", keep_path=False)
+        self.copy("*.h", dst="include", src=self._source_subfolder)
+        self.copy("*.h", dst="include", keep_path=False)
+        self.copy("zlibstatic*.lib", dst="lib", keep_path=False)
+        self.copy("*.a", dst="lib", keep_path=False)
         if self.settings.compiler == "msvc":
             self.copy("*.pdb", dst="lib", keep_path=False)
 
