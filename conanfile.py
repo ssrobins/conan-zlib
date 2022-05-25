@@ -1,6 +1,5 @@
 from conans import ConanFile, tools
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain
-import os
 
 class Conan(ConanFile):
     name = "zlib"
@@ -26,8 +25,9 @@ class Conan(ConanFile):
 
     def source(self):
         tools.get(f"https://zlib.net/{self.zip_name}",
-            sha256="91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9")
-        os.rename(self.zip_folder_name, self.source_subfolder)
+            sha256="91844808532e5ce316b3c010929493c0244f3d37593afd6de04f71821d5136d9",
+            destination=self.source_subfolder,
+            strip_root=True)
 
     def generate(self):
         tc = CMakeToolchain(self)
