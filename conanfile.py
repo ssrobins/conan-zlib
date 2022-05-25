@@ -54,10 +54,10 @@ class Conan(ConanFile):
     def package(self):
         self.copy("*.h", dst="include", src=self._source_subfolder)
         self.copy("*.h", dst="include", keep_path=False)
-        self.copy("zlibstatic*.lib", dst="lib", keep_path=False)
+        self.copy("*zlibstatic*.lib", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False)
         if self.settings.compiler == "msvc":
-            self.copy("*.pdb", dst="lib", keep_path=False)
+            self.copy("*zlibstatic*.pdb", dst="lib", keep_path=False)
 
     def package_info(self):
         if self.settings.os == "Windows" and not tools.os_info.is_linux:
