@@ -11,7 +11,7 @@ def main():
         "androidarm": "-pr:h=profiles/androidarm.jinja",
         "androidarm64": "-pr:h=profiles/androidarm64.jinja",
         "ios": "-pr:h=profiles/ios",
-        "linux": "-s compiler=gcc -s compiler.version=7 -s compiler.libcxx=libstdc++11 -s compiler.cppstd=17",
+        "linux": "-pr:h=profiles/linux",
         "macos": "-pr:h=profiles/macos",
         "windows": "-pr:h=profiles/windows"
     }
